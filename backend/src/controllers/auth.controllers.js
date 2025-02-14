@@ -4,7 +4,6 @@ import bcrypt from "bcryptjs";
 
 export const signup = async (req, res) => {
   const { fullName, email, password } = req.body;
-
   try {
     if (!fullName || !email || !password) {
       return res.status(400).json({ message: "All fields are required" });
@@ -18,9 +17,7 @@ export const signup = async (req, res) => {
 
     const user = await User.findOne({ email });
 
-    if (user) {
-      return res.status(400).json({ message: "Email already exists" });
-    }
+    if (user) return res.status(400).json({ message: "Email already exists" });
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -51,7 +48,18 @@ export const signup = async (req, res) => {
 };
 
 export const login = async (req, res) => {
-  res.send("Login route");
+  const {email, password} = req.body;
+
+  try {
+    const user = await User.findOne({email})
+
+    if (!user) {
+      return res.status(404).json({message: "User not found"});
+    }
+    
+  } catch (error) {
+    
+  }
 };
 
 export const logout = async (req, res) => {
